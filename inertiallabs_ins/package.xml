@@ -1,0 +1,27 @@
+<?xml version="1.0"?>
+<package format="2">
+  <name>inertiallabs_ins</name>
+  <version>1.0.0</version>
+  <description>The Inertial Labs INS package</description>
+
+  <maintainer email="info@inertiallabs.com">Inertial Labs</maintainer>
+  <url type="website">https://inertiallabs.com</url>
+
+  <license>MIT</license>
+
+  <buildtool_depend>ament_cmake</buildtool_depend>
+
+  <depend>geometry_msgs</depend>
+  <depend>std_msgs</depend>
+  <depend>sensor_msgs</depend>
+  <depend>dynamic_reconfigure</depend>
+  <depend>tf2_ros</depend>
+  <depend>rclpy</depend>
+  <depend>rclcpp</depend>
+  <depend>inertiallabs_msgs</depend>
+
+  <export>
+    <build_type>ament_cmake</build_type>
+  </export>
+
+</package>
