@@ -1,5 +1,5 @@
 # inertiallabs_ros2_pkgs
-Linux ROS driver for [Inertial Labs](https://inertiallabs.com/) products.
+Linux ROS2 driver for [Inertial Labs](https://inertiallabs.com/) products.
 Supported devices: INS, IMU-P, AHRS, AHRS-10.
 
 The package is developed based on the official `SDK v0.2` for Linux.
@@ -20,7 +20,7 @@ And build with the Colcon.
 
 ```bash
 cd <your_work_space>/src
-git clone https://us.inertiallabs.com:31443/scm/ins/inertiallabs-ros2-pkgs.git
+git clone https://github.com/inertiallabs/inertiallabs-ros2-pkgs.git
 cd <your_work_space>
 colcon build
 ```
@@ -78,19 +78,19 @@ The output data format of the INS data according to IL INS ICD.
 
 Feel free to modify using fields from IL::INSDataStruct
 
-`/Inertial_Labs/sensor_data`  
+`/Inertial_Labs/sensor_data`
 Gyro(x,y,z) , Accelation(x,y,z) , Magnetic (x,y,z) , Temprature , Input Voltage , Pressure , Barometric height.
 
-`/Inertial_Labs/ins_data`  
+`/Inertial_Labs/ins_data`
 GPS INS Time, GPS IMU Time, Millisecond of the week, Latitude, Longitude, Altitude, Heading , Pitch , Roll, Orientation quaternion, East Velocity, North Velocity, Up Velocity values, Solution status, Position STD, Heading STD, Unit Status.
 
-`/Inertial_Labs/gps_data`  
+`/Inertial_Labs/gps_data`
 Latitude, Longitude , Altitude , Ground Speed , Track Direction,  Vertical Speed values .
 
-`/Inertial_Labs/gnss_data`  
+`/Inertial_Labs/gnss_data`
 GNSS service Info 1, Info 2, Satellites Used, Velocity Latency, Heading status, Heading, Pitch, GDOP, PDOP, HDOP, VDOP, TDOP, New GNSS Flag, Age of differenctiol correction, Position STD, Heading STD, Pitch STD.
 
-`/Inertial_Labs/marine_data`  
+`/Inertial_Labs/marine_data`
 Heave, Surge, Sway, Heave Velocity, Surge Velocity, Sway Velocity, Significant Wave Height.
 
 
