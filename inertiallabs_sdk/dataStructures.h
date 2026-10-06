@@ -21,6 +21,16 @@ namespace IL {
         const uint8_t IL_OPVT_GNSSext = 0x67;
         const uint8_t SPAN_rawIMU = 0x68;
         const uint8_t IL_UDD = 0x95;
+        const uint8_t IL_INS_TGA = 0x9a;
+    };
+
+    struct BaseStationRange {
+        double lat;
+        double lon;
+        double alt;
+        double range;
+        float std;
+        float latency;
     };
 
     struct INSDataStruct
@@ -95,6 +105,7 @@ namespace IL {
         double VStab;
         double Temp;
         int USW;
+        int USW2;
         int INSSolStatus;
         double KFLatStd;
         double KFLonStd;
@@ -122,6 +133,7 @@ namespace IL {
         double ExtAntPri[3];
         double ExtAntSec[3];
         int NewAiding;
+        int NewAiding2;
         double HdgExt;
         double HdgExtStd;
         double HdgExtLatency;
@@ -133,6 +145,9 @@ namespace IL {
         double DVLUpStd;
         double DVLLatency;
         double DVLPressure;
+        double RefAirTemp;
+        double RefAltitude;
+        double RefAirPressure;
         double GBExt[3];
         double ABExt[3];
         double PitchExt;
@@ -155,6 +170,14 @@ namespace IL {
         int LatencyECEF;
         int PPPStore;
         int PPPApp;
+        double PStatic;
+        double PDynamic;
+        double BHCP;
+        double TAS;
+        double ADUWind[3];
+        int ADUStatus;
+        double WNDspeed;
+        double WNDdir;
         uint64_t dataPresent[8];
 
         double Heave;
@@ -164,6 +187,14 @@ namespace IL {
         double Surge_velocity;
         double Sway_velocity;
         double significant_wave_height;
+
+        double grid_heading;
+
+        uint8_t extended_cmd_code;
+        uint8_t extended_cmd_val;
+
+        uint8_t BSsol;
+        BaseStationRange bs_ranges[10];
     };
 
 

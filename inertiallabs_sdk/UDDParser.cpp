@@ -99,16 +99,27 @@ namespace IL {
             dataSet.append(reinterpret_cast<const char*>(&payloadBuf[1]), payloadBuf[0]);
             payloadInd = payloadBuf[0] + 1;
             break;
+        case IL_INS_TGA:
+            statusStream << "TGA";
+            dataSet = "\x21\x23\x03";
+            break;
         default:
             statusStream << "0x" << hex << setw(2) << setfill('0') << static_cast<uint32_t>(code);
+            dataSet = "";
             break;
         }
-        writeHeader();
+//		if (dataSet != oldDataSet)
+        {
+            writeHeader();
+            oldDataSet = dataSet;
+        }
         writeTxtAndData();
+        hdrString = hdrStream.str();
+        txtString = txtStream.str();
         return 0;
     }
 
-    void UDDParser::writeHeader()
+void UDDParser::writeHeader()
     {
         for (size_t i = 0; i < dataSet.size(); ++i)
         {
@@ -131,7 +142,14 @@ namespace IL {
                 hdrStream << "Heading\tPitch\tRoll";
                 break;
             case 0x09:
+            case 0x0a:
                 hdrStream << "QW\tQX\tQY\tQZ";
+                break;
+            case 0x0d:
+                hdrStream << "GridHeading";
+                break;
+            case 0x0e:
+                hdrStream << "Pitch1\tYaw1\tRoll1";
                 break;
             case 0x10:
             case 0x11:
@@ -160,6 +178,12 @@ namespace IL {
             case 0x1B:
                 hdrStream << "V_East\tV_North\tV_Up";
                 break;
+            case 0x1d:
+                hdrStream << "V_Right\tV_Forward\tV_Up";
+                break;
+            case 0x1e:
+                hdrStream << "A_East\tA_North\tA_Up";
+                break;
             case 0x20:
             case 0x21:
                 hdrStream << "GX\tGY\tGZ";
@@ -179,6 +203,29 @@ namespace IL {
                 break;
             case 0x27:
                 hdrStream << "APVPX\tAPVPY\tAPVPZ";
+                break;
+            case 0x28:
+                hdrStream << "DiffP_ArduPilot";
+                break;
+            case 0x29:
+                hdrStream << "GFX\tGFY\tGFZ";
+                break;
+            case 0x2a:
+                hdrStream << "HF4930Stat";
+                break;
+            case 0x2b:
+                for (int r = 0; r < 3; ++r) {
+                    for (int c = 0; c < 3; ++c) {
+                        hdrStream << "TM_c" << r << c;
+                        if (!(r == 2 && c == 2)) hdrStream << '\t';
+                    }
+                }
+                break;
+            case 0x2c:
+                for (int r = 0; r < 3; ++r) {
+                    hdrStream << "HM_0" << r;
+                    if (r != 2) hdrStream << '\t';
+                }
                 break;
             case 0x30:
             case 0x31:
@@ -253,6 +300,15 @@ namespace IL {
             case 0x49:
                 hdrStream << "PPPApp\tPPPStore";
                 break;
+            case 0x4a:
+                hdrStream << "GPSFix\tSpoofingDetect";
+                break;
+            case 0x4e:
+                hdrStream << "GLOGPSTimeOffset";
+                break;
+            case 0x4f:
+                hdrStream << "NewGPS2";
+                break;
             case 0x50:
                 hdrStream << "VSup";
                 break;
@@ -279,6 +335,21 @@ namespace IL {
                 break;
             case 0x58:
                 hdrStream << "KFVEStd\tKFVNStd\tKFVUStd";
+                break;
+            case 0x59:
+                hdrStream << "CalcTime";
+                break;
+            case 0x5a:
+                hdrStream << "USW2";
+                break;
+            case 0x5c:
+                hdrStream << "KFPitchCov\tKFRollCov";
+                break;
+            case 0x5e:
+                hdrStream << "HeadingCorrSrc";
+                break;
+            case 0x5f:
+                hdrStream << "LatAcc\tLonAcc\tAltAcc\tVEAcc\tVNAcc\tVUpAcc";
                 break;
             case 0x60:
                 hdrStream << "Odometer";
@@ -313,6 +384,135 @@ namespace IL {
             case 0x6A:
                 hdrStream << "PriAntRightExt\tPriAntForwardExt\tPriAntUpExt\tSecAntRightExt\tSecAntForwardExt\tSecAntUpExt";
                 break;
+            case 0x6B:
+                hdrStream << "RefAirTemp\tRefAirAltitude\tRefAirPressure";
+                break;
+            case 0x6c:
+                hdrStream << "AltExt\tAltExtStd";
+                break;
+            case 0x6e:
+                hdrStream << "LatExt\tLonExt\tLatExtStd\tLonExtStd\tExtPosLatency";
+                break;
+            case 0x80:
+                hdrStream << "PStat";
+                break;
+            case 0x81:
+                hdrStream << "PDyn";
+                break;
+            case 0x82:
+                hdrStream << "PressureRatio";
+                break;
+            case 0x83:
+                hdrStream << "PressureAlt";
+                break;
+            case 0x84:
+                hdrStream << "BHCP";
+                break;
+            case 0x85:
+                hdrStream << "CAS";
+                break;
+            case 0x86:
+                hdrStream << "TAS";
+                break;
+            case 0x87:
+                hdrStream << "MACH";
+                break;
+            case 0x88:
+                hdrStream << "TrueAOA";
+                break;
+            case 0x89:
+                hdrStream << "RateOfClimb";
+                break;
+            case 0x8a:
+                hdrStream << "ADUWindE\tADUWindN\tReserved";
+                break;
+            case 0x8b:
+                hdrStream << "AirDensity";
+                break;
+            case 0x8c:
+                hdrStream << "OutsideAirTemp";
+                break;
+            case 0x8d:
+                hdrStream << "ADUStatus";
+                break;
+            case 0x97:
+                hdrStream << "GFX\tGFY\tGFZ\tAFX\tAFY\tAFZ";
+                break;
+            case 0x98:
+                hdrStream << "GRX\tGRY\tGRZ";
+                break;
+            case 0x99:
+                hdrStream << "BaroTemp";
+                break;
+            case 0x9a:
+                hdrStream << "OTFMagCal";
+                break;
+            case 0xA1:
+                hdrStream << "NewAiding2";
+                break;
+            case 0xA2:
+                hdrStream << "PStat\tPDyn";
+                break;
+            case 0xA3:
+                hdrStream << "AirSpeed2D\tAirDir2D";
+                break;
+            case 0xA4:
+                hdrStream << "BSsol";
+                break;
+            case 0xA5:
+            case 0xA6:
+            case 0xA7:
+            case 0xA8:
+            case 0xA9:
+            case 0xAA:
+            case 0xAB:
+            case 0xAC:
+            case 0xAD:
+            case 0xAE:
+                hdrStream << "BSLat\tBSLon\tBSAlt\tBSRange\tBSRangeStd\tBSLatency";
+                break;
+            case 0xaf:
+                hdrStream << "UAVCANDiffPressure\tUAVCANTemp";
+                break;
+            case 0xb0:
+                hdrStream << "ECEF_X\tECEF_Y\tECEF_Z";
+                break;
+            case 0xb1:
+                hdrStream << "VECEF_X\tVECEF_Y\tVECEF_Z";
+                break;
+            case 0xb2:
+                hdrStream << "Easting\tNorthing\tZone";
+                break;
+            case 0xc0:
+                hdrStream << "ublox_status";
+                break;
+            case 0xc1:
+                hdrStream << "NovAtelReceiverStatus";
+                break;
+            case 0xc2:
+                hdrStream << "ACHReceiverStatus";
+                break;
+            case 0xc4:
+                hdrStream << "GNSSPosLat\tGNSSVelLat";
+                break;
+            case 0xd0:
+                hdrStream << "AltStatus";
+                break;
+            case 0xd1:
+                hdrStream << "MagDecl";
+                break;
+            case 0xd2:
+                hdrStream << "KFOdoYaw\tKFOdoPitch\tKFOdoScale";
+                break;
+            case 0xd3:
+                hdrStream << "KFDVLYaw\tKFDVLPitch\tKFDVLRoll\tKFDVLScale";
+                break;
+            case 0xd4:
+                hdrStream << "KFTunnelGuideYaw\tKFTunnelGuideScale";
+                break;
+            case 0xd5:
+                hdrStream << "ExtendedCmdCode\tExtendedCmdVal\tExtendedCmdReserved0\tExtendedCmdReserved1";
+                break;
             case 0xF0:
             case 0xF7:
                 hdrStream << "Latency_ms_pos\tLatency_ms_vel";
@@ -346,16 +546,16 @@ namespace IL {
             }
             if (i < dataSet.size() - 1)
                 hdrStream << "\t";
-            else
-                hdrStream << "\n";
         }
+        hdrStream << "\n";
     }
 
     void UDDParser::writeTxtAndData()
     {
         for (size_t i = 0; i < dataSet.size(); ++i)
         {
-            switch (static_cast<uint8_t>(dataSet[i]))
+            const auto udd_id = static_cast<uint8_t>(dataSet[i]);
+            switch (udd_id)
             {
             case 0x01:
                 outData.ms_gps = readScaled<uint32_t>(1, false);
@@ -388,6 +588,17 @@ namespace IL {
             case 0x09:
                 for (int ind = 0; ind < 4; ++ind)
                     outData.Quat[ind] = readScaled<int16_t>(1e4, ind < 3);
+                break;
+            case 0x0a:
+                for (int ind = 0; ind < 4; ++ind)
+                    outData.Quat[ind] = readScaled<int32_t>(1e6, ind < 3);
+                break;
+            case 0x0d:
+                outData.grid_heading = readScaled<uint16_t>(1e2, false);
+                break;
+            case 0x0e:
+                for (int ind = 0; ind < 3; ++ind)
+                    readScaled<int16_t>(1e2, ind < 2);
                 break;
             case 0x10:
                 outData.Latitude = readScaled<int32_t>(1e7, true);
@@ -431,6 +642,14 @@ namespace IL {
                 for (int ind = 0; ind < 3; ++ind)
                     outData.VelENU[ind] = readScaled<int32_t>(1e6, ind < 2);
                 break;
+            case 0x1d:
+                for (int j = 0; j < 3; ++j)
+                    readScaled<int32_t>(1e2, j < 2);
+                break;
+            case 0x1e:
+                for (int j = 0; j < 3; ++j)
+                    readScaled<int32_t>(1e6, j < 2);
+                break;
             case 0x20:
                 for (int ind = 0; ind < 3; ++ind)
                 {
@@ -467,6 +686,25 @@ namespace IL {
             case 0x27:
                 for (int ind = 0; ind < 3; ++ind)
                     outData.AccPVPoint[ind] = readScaled<int32_t>(1e5, ind < 2);
+                break;
+            case 0x28:
+                readScaled<int32_t>(1e4, false);
+                break;
+            case 0x29:
+                for (int j = 0; j < 3; ++j)
+                    readScaled<int32_t>(1e5, j < 2);
+                break;
+            case 0x2a:
+                readScaled<uint8_t>(1, false);
+                break;
+            case 0x2b:
+                for (int r = 0; r < 3; ++r)
+                    for (int c = 0; c < 3; ++c)
+                        readScaled<float>(1, r < 2 || c < 2);
+                break;
+            case 0x2c:
+                for (int r = 0; r < 3; ++r)
+                    readScaled<float>(1, r < 2);
                 break;
             case 0x30:
                 outData.LatGNSS = readScaled<int32_t>(1e7, true);
@@ -570,6 +808,16 @@ namespace IL {
                 outData.PPPApp = readScaled<uint8_t>(1, true);
                 outData.PPPStore = readScaled<uint8_t>(1, false);
                 break;
+            case 0x4a:
+                readScaled<uint8_t>(1, true);
+                readScaled<uint8_t>(1, false);
+                break;
+            case 0x4e:
+                readScaled<int32_t>(1e3, false);
+                break;
+            case 0x4f:
+                readScaled<uint16_t>(1, false, 2);
+                break;
             case 0x50:
                 outData.VSup = readScaled<uint16_t>(100, false);
                 break;
@@ -602,6 +850,23 @@ namespace IL {
                 outData.KFVelStd[0] = readScaled<uint8_t>(1000, true);
                 outData.KFVelStd[1] = readScaled<uint8_t>(1000, true);
                 outData.KFVelStd[2] = readScaled<uint8_t>(1000, false);
+                break;
+            case 0x59:
+                readScaled<int32_t>(1e3, false);
+                break;
+            case 0x5a:
+                outData.USW2 = readScaled<uint16_t>(1, false);
+                break;
+            case 0x5c:
+                readScaled<uint16_t>(1e3, true);
+                readScaled<uint16_t>(1e3, false);
+                break;
+            case 0x5e:
+                readScaled<uint8_t>(1, false);
+                break;
+            case 0x5f:
+                for (int j = 0; j < 6; ++j)
+                    readScaled<int32_t>(1e3, j < 5);
                 break;
             case 0x60:
                 outData.Odometer = readScaled<int32_t>(1000, false);
@@ -646,8 +911,8 @@ namespace IL {
                 outData.DVLRightStd = readScaled<uint16_t>(1000, true);
                 outData.DVLFwdStd = readScaled<uint16_t>(1000, true);
                 outData.DVLUpStd = readScaled<uint16_t>(1000, true);
-                outData.DVLLatency = readScaled<uint16_t>(1000, false);
-                outData.DVLPressure = readScaled<uint32_t>(0.1, true);
+                outData.DVLLatency = readScaled<uint16_t>(1000, true);
+                outData.DVLPressure = readScaled<uint32_t>(0.1, false);
                 break;
             case 0x68:
                 for (int ind = 0; ind < 3; ++ind)
@@ -665,6 +930,169 @@ namespace IL {
                     outData.ExtAntPri[ind] = readScaled<int16_t>(1e3, true);
                 for (int ind = 0; ind < 3; ++ind)
                     outData.ExtAntSec[ind] = readScaled<int16_t>(1e3, ind < 2);
+                break;
+            case 0x6B:
+                outData.RefAirTemp = readScaled<int16_t>(10, true);
+                outData.RefAltitude = readScaled<int32_t>(100, true);
+                outData.RefAirPressure = readScaled<uint16_t>(0.5, false);
+                break;
+            case 0x6c:
+                outData.AltExt = readScaled<int32_t>(1e3, true);
+                outData.AltExtStd = readScaled<uint16_t>(100, false);
+                break;
+            case 0x6e:
+                outData.LatExt = readScaled<int32_t>(1e7, true);
+                outData.LonExt = readScaled<int32_t>(1e7, true);
+                outData.LatExtStd = readScaled<uint16_t>(100, true);
+                outData.LonExtStd = readScaled<uint16_t>(100, true);
+                outData.ExtPosLatency = readScaled<uint16_t>(1000, false);
+                break;
+            case 0x80:
+                outData.PStatic = readScaled<uint32_t>(1, false);
+                break;
+            case 0x81:
+                outData.PDynamic = readScaled<int32_t>(100, false);
+                break;
+            case 0x82:
+                readScaled<int32_t>(1e6, false);
+                break;
+            case 0x83:
+                readScaled<int32_t>(1e3, false);
+                break;
+            case 0x84:
+                outData.BHCP = readScaled<int32_t>(1000, false);
+                break;
+            case 0x85:
+                readScaled<int16_t>(1e2, false);
+                break;
+            case 0x86:
+                outData.TAS = readScaled<int16_t>(100, false);
+                break;
+            case 0x87:
+                readScaled<uint16_t>(1e4, false);
+                break;
+            case 0x88:
+                readScaled<int16_t>(1e2, false);
+                break;
+            case 0x89:
+                readScaled<int16_t>(1e2, false);
+                break;
+            case 0x8A:
+                for (int ind = 0; ind < 3; ++ind)
+                    outData.ADUWind[ind] = readScaled<int16_t>(100, ind < 2);
+                break;
+            case 0x8b:
+                readScaled<uint16_t>(1e4, false);
+                break;
+            case 0x8c:
+                readScaled<int16_t>(1e2, false);
+                break;
+            case 0x8d:
+                outData.ADUStatus = readScaled<uint16_t>(1, false);
+                break;
+            case 0x97:
+                for (int j = 0; j < 3; ++j)
+                    readScaled<int16_t>(KG, true);
+                for (int j = 0; j < 3; ++j)
+                    readScaled<int16_t>(KA, j < 2);
+                break;
+            case 0x98:
+                for (int j = 0; j < 3; ++j)
+                    readScaled<int32_t>(1e5, j < 2);
+                break;
+            case 0x99:
+                readScaled<int16_t>(1e1, false);
+                break;
+            case 0x9a:
+                readScaled<uint8_t>(1e1, false);
+                break;
+            case 0xA1:
+                outData.NewAiding2 = readScaled<uint16_t>(1, false);
+                break;
+            case 0xA2:
+                outData.PStatic = readScaled<uint32_t>(1, true);
+                outData.PDynamic = readScaled<int32_t>(10, false);
+                break;
+            case 0xA3:
+                outData.WNDspeed = readScaled<int32_t>(100, true);
+                outData.WNDdir = readScaled<uint16_t>(100, false);
+                break;
+            case 0xA4:
+                outData.BSsol = readScaled<uint8_t>(1, false);
+                break;
+            case 0xA5:
+            case 0xA6:
+            case 0xA7:
+            case 0xA8:
+            case 0xA9:
+            case 0xAA:
+            case 0xAB:
+            case 0xAC:
+            case 0xAD:
+            case 0xAE:
+            {
+                auto& bs_range = outData.bs_ranges[udd_id - 0xa5];
+                bs_range.lat = readScaled<int32_t>(1e7, true);
+                bs_range.lon = readScaled<int32_t>(1e7, true);
+                bs_range.alt = readScaled<int32_t>(1e3, true);
+                bs_range.range = readScaled<uint32_t>(1e3, true);
+                bs_range.std = readScaled<uint16_t>(1e2, true);
+                bs_range.latency = readScaled<uint16_t>(1e3, false);
+                break;
+            }
+            case 0xaf:
+                readScaled<int32_t>(1e2, true);
+                readScaled<int16_t>(1e1, false);
+                break;
+            case 0xb0:
+                for (int j = 0; j < 3; ++j)
+                    readScaled<int32_t>(1e2, j < 2);
+                break;
+            case 0xb1:
+                for (int j = 0; j < 3; ++j)
+                    readScaled<int32_t>(1e6, j < 2);
+                break;
+            case 0xb2:
+                readScaled<int32_t>(1e2, true);
+                readScaled<int32_t>(1e2, true);
+                readScaled<int8_t>(1, false);
+                break;
+            case 0xc0:
+                readScaled<uint8_t>(1, false, 2);
+                break;
+            case 0xc1:
+                readScaled<uint32_t>(1, false);
+                break;
+            case 0xc2:
+                readScaled<uint8_t>(1, false, 2);
+                break;
+            case 0xc4:
+                readScaled<uint8_t>(1, true);
+                readScaled<uint8_t>(1, false);
+                break;
+            case 0xd0:
+                readScaled<uint8_t>(1, false);
+                break;
+            case 0xd1:
+                readScaled<int16_t>(1e2, false);
+                break;
+            case 0xd2:
+                for (int j = 0; j < 3; ++j)
+                    readScaled<int16_t>(1e3, j < 2);
+                break;
+            case 0xd3:
+                for (int j = 0; j < 4; ++j)
+                    readScaled<int16_t>(1e3, j < 3);
+                break;
+            case 0xd4:
+                for (int j = 0; j < 2; ++j)
+                    readScaled<int16_t>(1e3, j < 1);
+                break;
+            case 0xd5:
+                outData.extended_cmd_code = readScaled<uint8_t>(1, true);
+                outData.extended_cmd_val = readScaled<uint8_t>(1, true);
+                readScaled<uint8_t>(1, true);
+                readScaled<uint8_t>(1, false);
                 break;
             case 0xF0:
                 outData.Latency_ms_pos = readScaled<uint8_t>(1, true);
@@ -746,13 +1174,13 @@ namespace IL {
                 readScaled<uint16_t>(1, false, 16);
                 break;
             default:
+                //			cout << "Unknown data!" << endl;
                 break;
             }
             if (i < dataSet.size() - 1)
                 txtStream << "\t";
-            else
-                txtStream << "\n";
         }
+        txtStream << "\n";
     }
 
     void UDDParser::finish()

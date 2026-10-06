@@ -33,9 +33,12 @@ namespace IL {
         int payloadInd;
         uint8_t payloadBuf[65530];
         std::string dataSet;
+        std::string oldDataSet;
         std::string fileName;
         std::stringstream txtStream;
+        std::string txtString;
         std::stringstream hdrStream;
+        std::string hdrString;
         std::stringstream statusStream;
         double dVal;
         float fVal;
