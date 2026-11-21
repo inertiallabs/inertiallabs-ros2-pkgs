@@ -7,6 +7,7 @@
 
 //Inertial Labs source header
 #include "ILDriver.h"
+#include "sensor_data_fill.h"
 
 //adding message type headers
 #include <inertiallabs_msgs/msg/sensor_data.hpp>
@@ -40,19 +41,7 @@ void publishDevice(IL::INSDataStruct* data, void* contextPtr)
         inertiallabs_msgs::msg::SensorData msg_sensor_data;
         msg_sensor_data.header.stamp = timestamp;
         msg_sensor_data.header.frame_id = context->imuFrameId;
-        msg_sensor_data.mag.x = data->Mag[0];
-        msg_sensor_data.mag.y = data->Mag[0];
-        msg_sensor_data.mag.z = data->Mag[0];
-        msg_sensor_data.accel.x = data->Acc[0];
-        msg_sensor_data.accel.y = data->Acc[1];
-        msg_sensor_data.accel.z = data->Acc[2];
-        msg_sensor_data.gyro.x = data->Gyro[0];
-        msg_sensor_data.gyro.y = data->Gyro[1];
-        msg_sensor_data.gyro.z = data->Gyro[2];
-        msg_sensor_data.temp = data->Temp;
-        msg_sensor_data.vinp = data->VSup;
-        msg_sensor_data.pressure = data->hBar;
-        msg_sensor_data.barometric_height = data->pBar;
+        fillSensorData(*data, msg_sensor_data);
         context->sensorDataPub->publish(msg_sensor_data);
     }
 

@@ -60,4 +60,11 @@ install(TARGETS il_ins
     DESTINATION
         lib/${PROJECT_NAME})
 
+if(BUILD_TESTING)
+    find_package(ament_cmake_gtest REQUIRED)
+    ament_add_gtest(test_sensor_data_fill test/test_sensor_data_fill.cpp)
+    target_include_directories(test_sensor_data_fill PRIVATE src)
+    ament_target_dependencies(test_sensor_data_fill inertiallabs_msgs)
+endif()
+
 ament_package()
