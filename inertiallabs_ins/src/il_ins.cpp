@@ -41,8 +41,8 @@ void publishDevice(IL::INSDataStruct* data, void* contextPtr)
         msg_sensor_data.header.stamp = timestamp;
         msg_sensor_data.header.frame_id = context->imuFrameId;
         msg_sensor_data.mag.x = data->Mag[0];
-        msg_sensor_data.mag.y = data->Mag[0];
-        msg_sensor_data.mag.z = data->Mag[0];
+        msg_sensor_data.mag.y = data->Mag[1];
+        msg_sensor_data.mag.z = data->Mag[2];
         msg_sensor_data.accel.x = data->Acc[0];
         msg_sensor_data.accel.y = data->Acc[1];
         msg_sensor_data.accel.z = data->Acc[2];
